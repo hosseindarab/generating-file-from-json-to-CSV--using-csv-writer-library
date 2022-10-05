@@ -1,0 +1,29 @@
+{
+  "name": "jsontocsv",
+  "version": "1.0.0",
+  "description": "Transform Json to CSV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "start": "tsc && node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "csv-writer": "^1.6.0",
+    "dateformat": "^5.0.3",
+    "dotenv": "^16.0.2",
+    "fastify": "^4.6.0",
+    "fs": "^0.0.1-security",
+    "json2csv": "^5.0.7",
+    "moment": "^2.29.4",
+    "node-modules": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/dateformat": "^5.0.0",
+    "@types/node": "^18.7.23",
+    "typescript": "^4.8.3"
+  }
+}
