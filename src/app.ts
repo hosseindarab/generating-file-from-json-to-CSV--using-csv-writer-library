@@ -1,20 +1,22 @@
-"use strict";
-require('dotenv').config();
+require('dotenv').config()
 const _ = require('lodash');
 const axios = require('axios');
-const moment = require('moment');
-const { promises: fs } = require('fs');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const moment = require('moment')
+const { promises: fs } = require('fs')
+const createCsvWriter = require('csv-writer').createObjectCsvWriter
 const { Parser } = require('json2csv');
+
 const main = async () => {
     try {
-        let recordNumbers = 0;
+        let recordNumbers: number = 0
         const config = {
             headers: { Authorization: `${process.env.AUTH}` }
         };
-        const url = process.env.URL;
+        const url = process.env.URL
+
         const resp = await axios.get(url, config);
-        let jsonData = resp.data;
+        let jsonData = resp.data
+
         const csvWriter2 = createCsvWriter({
             path: './csv/export.csv',
             header: [
@@ -73,6 +75,7 @@ const main = async () => {
                 'price',
                 'condition_discount',
                 'total_discount',
+
             ],
             fieldDelimiter: ';',
             append: true
@@ -85,43 +88,43 @@ const main = async () => {
                 'time'
             ],
             fieldDelimiter: ';',
+
         });
         const records1 = [
-            { rowCounter: '1', date: moment().format('YYYY-MM-DD'), time: moment().format('HH:mm:ss') }
-        ];
-        await csvWriterHeader.writeRecords(records1);
+            { rowCounter: '1', date: moment().format('YYYY-MM-DD'), time: moment().utcOffset('+0200').format('HH:mm:ss') }
+        ]
+        await csvWriterHeader.writeRecords(records1)
+
         for (const json of jsonData) {
             if (!json.customer) {
                 console.log(`Order ${json.id} - Customer not found`);
-                continue;
-            }
-            ;
+                continue
+            };
             if (!json.billing_address) {
                 console.log(`Order ${json.id} - Billing address not found`);
-                continue;
-            }
-            ;
+                continue
+            };
             if (!json.shipping_address) {
                 console.log(`Order ${json.id} - Shipping address not found`);
-                continue;
-            }
-            ;
+                continue
+            };
             if (!json.line_items) {
                 console.log(`Order ${json.id} - Line items not found`);
-                continue;
-            }
-            ;
+                continue
+            };
             if (!json.note_attributes) {
                 console.log(`Order ${json.id} - Note attributes not found`);
-                continue;
-            }
-            ;
-            const fiscal_code = _.find(json.note_attributes, (item) => item.name == 'fiscalCode');
+                continue
+            };
+
+            const fiscal_code = _.find(json.note_attributes, (item: any) => item.name == 'fiscalCode')
             if (_.isNil(fiscal_code))
                 continue;
-            const vat_number = _.find(json.note_attributes, (item) => item.name == 'vatNumber');
+
+            const vat_number = _.find(json.note_attributes, (item: any) => item.name == 'vatNumber')
             if (_.isNil(vat_number))
                 continue;
+
             const records2 = [
                 {
                     rowCounter: '2',
@@ -165,8 +168,9 @@ const main = async () => {
                     incoterms_location: "Roma"
                 }
             ];
-            recordNumbers += records2.length;
-            await csvWriter2.writeRecords(records2);
+            recordNumbers += records2.length
+            await csvWriter2.writeRecords(records2)
+
             for (const line of json.line_items) {
                 const records3 = [
                     {
@@ -181,10 +185,11 @@ const main = async () => {
                         total_discount: line.total_discount
                     }
                 ];
-                await csvWriter3.writeRecords(records3);
-                recordNumbers += records3.length;
+                await csvWriter3.writeRecords(records3)
+                recordNumbers += records3.length
             }
         }
+
         const csvWriterFooter = createCsvWriter({
             path: './csv/export.csv',
             header: [
@@ -197,13 +202,12 @@ const main = async () => {
             append: true,
         });
         const records9 = [
-            { rowCounter: '9', date: moment().format('YYYY-MM-DD'), time: moment().format('HH:mm:ss'), recordNumber: recordNumbers }
-        ];
-        await csvWriterFooter.writeRecords(records9);
-    }
-    catch (err) {
+            { rowCounter: '9', date: moment().format('YYYY-MM-DD'), time: moment().utcOffset('+0200').format('HH:mm:ss'), recordNumber: recordNumbers }
+        ]
+        await csvWriterFooter.writeRecords(records9)
+    } catch (err) {
+        // Handle Error Here
         console.error(err);
     }
 };
 main();
-//# sourceMappingURL=index.js.map
