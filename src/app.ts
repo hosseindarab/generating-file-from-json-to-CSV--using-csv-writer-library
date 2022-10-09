@@ -91,6 +91,7 @@ const main = async () => {
 
         });
         const records1 = [
+            // using utcOffset to change the time zone in hour.
             { rowCounter: '1', date: moment().format('YYYY-MM-DD'), time: moment().utcOffset('+0200').format('HH:mm:ss') }
         ]
         await csvWriterHeader.writeRecords(records1)
@@ -202,6 +203,7 @@ const main = async () => {
             append: true,
         });
         const records9 = [
+            // using utcOffset to change the time zone in hour.
             { rowCounter: '9', date: moment().format('YYYY-MM-DD'), time: moment().utcOffset('+0200').format('HH:mm:ss'), recordNumber: recordNumbers }
         ]
         await csvWriterFooter.writeRecords(records9)
